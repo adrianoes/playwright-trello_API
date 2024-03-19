@@ -1,0 +1,3 @@
+installing playwright
+"yarn create playwright" and select TypeScript, tests, yes for github actions and true for install its browsers
+

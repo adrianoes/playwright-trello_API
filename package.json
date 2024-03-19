@@ -1,0 +1,11 @@
+{
+  "name": "playwright-trello_API",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.11.29"
+  },
+  "scripts": {}
+}
