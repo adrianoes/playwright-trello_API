@@ -1,7 +1,11 @@
+dotenv 16.4.5
+
+
 installing playwright
 "yarn create playwright" and select TypeScript, tests, yes for github actions and true for install its browsers
 
-
+Instalando o dotenv (https://www.npmjs.com/package/dotenv)
+yarn add dotenv -D
 
 Git initiation steps after creating playwright-trello_API repository in your git account (at first time, you can copy and paste all this commands at once)
 
@@ -21,3 +25,5 @@ git status
 git add .
 git commit -m "Implementation of board tests. Miss list, card and checklist tests"
 git push -u origin main
+
+
