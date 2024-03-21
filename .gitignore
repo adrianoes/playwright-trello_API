@@ -4,4 +4,4 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .env
-playwright-trello_API.txt
+/playwright-trello_API.txt
