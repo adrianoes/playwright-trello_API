@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { createBoard } from '../supports/commands';
-import data from '../fixtures/testdata.json';
+import fixtureData from '../fixtures/testdata.json';
 import fs from 'fs';
+import { setTimeout } from 'timers/promises';
 
 require('dotenv').config()
 
@@ -63,22 +64,32 @@ test.describe('Boards', () => {
   })
 
   test('Delete a board', async ({ request }) => {
-    // await createBoard(request)
+    await createBoard(request)
 
 
     // const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
     // const board_id = body.board_id
     // console.log(board_id)
     
-    fs.readFile("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8", function(err, data) {
-      if (err) { throw err };
-      const body = data;
-      console.log(body);
-    });
-    // 
-    // const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    // expect(responseDB.status()).toEqual(200)
+    fs.readFile("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8", async function(err, data) {
+      if (err) { throw err }
+      const body = JSON.parse(data)
+      console.log(body.board_id)
+      const board_id = body.board_id
+      console.log(board_id)
+      // const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
+      // expect(responseDB.status()).toEqual(200) 
+    })
+
+    console.dir(fixtureData.board_id)
+    // const stream = new fs.ReadStream("C:/playwright-trello_API/tests/fixtures/testdata.json");
+    // console.log(stream)
+
+
+
   })
 })
+
+
 
 // Comparing same test in cypress, I was able to see that playwright has around 50% of code lines
