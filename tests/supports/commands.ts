@@ -11,7 +11,13 @@ export async function createBoard(request: APIRequestContext) {
     const responseBodyCB = await responseCB.json()
     expect(responseCB.status()).toEqual(200)
     console.log(responseBodyCB.name)
-    fs.writeFile('tests/fixtures/testdata.json', JSON.stringify({
+
+    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
       board_id: responseBodyCB.id
-    }), err => { if (err) console.log("Error writing file:", err); });
+    }), "utf8");
+
+
+    // fs.writeFile('tests/fixtures/testdata.json', JSON.stringify({
+    //   board_id: responseBodyCB.id
+    // }), err => { if (err) console.log("Error writing file:", err); });
 }

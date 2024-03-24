@@ -67,24 +67,33 @@ test.describe('Boards', () => {
     await createBoard(request)
 
 
-    // const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
-    // const board_id = body.board_id
-    // console.log(board_id)
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const board_id = body.board_id
+    console.log(board_id)
+    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
+    expect(responseDB.status()).toEqual(200)
+    //colocar os métodos api aqui dentro - não funcionou, ainda le o valor anterior
+    //escrever variáveis de ambiente  com valo do response
+    //desativar paralelismo 
+    // pesquisar como manter o contexto aberto durante o tempo necessário
+    // fazer o write sync e read sync - funcionou. Descobrir uma forma de funcionar async pois é a caracteristica do playwright. Começar por descobrir como manter o contexto aberto.
     
-    fs.readFile("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8", async function(err, data) {
-      if (err) { throw err }
-      const body = JSON.parse(data)
-      console.log(body.board_id)
-      const board_id = body.board_id
-      console.log(board_id)
-      // const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-      // expect(responseDB.status()).toEqual(200) 
-    })
+    // fs.readFile("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8", async function(err, data) {
+    //   if (err) { throw err }
+    //   const body = JSON.parse(data)
+    //   // console.log(body.board_id)
+    //   const board_id = body.board_id
+    //   // console.log(board_id)
+    //   // const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
+    //   // expect(responseDB.status()).toEqual(200) 
+    // })
 
-    console.dir(fixtureData.board_id)
+    // console.dir(fixtureData.board_id)
+    // console.log(JSON.stringify(fixtureData.board_id))
+    // console.log(JSON.parse(JSON.stringify(fixtureData.board_id)))
     // const stream = new fs.ReadStream("C:/playwright-trello_API/tests/fixtures/testdata.json");
     // console.log(stream)
-
+    // escrever body id no .env
 
 
   })
