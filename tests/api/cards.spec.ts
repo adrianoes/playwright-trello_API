@@ -7,13 +7,18 @@ require('dotenv').config()
 const key = process.env.TRELLO_KEY
 const token = process.env.TRELLO_TOKEN
 
+test.beforeEach(async ({ request }) => {
+  await createBoard(request)
+  await createList(request)
+});
+
+test.afterEach(async ({ request }) => {
+  await deleteBoard(request)
+});
+
 test.describe('cards', () => {
   test('Create a card', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const list_id = body.list_id
     const board_id = body.board_id
     console.log(list_id)
@@ -32,18 +37,12 @@ test.describe('cards', () => {
     }), "utf8");
 
     await deleteCard(request)
-
-    await deleteBoard(request)
   })
 
   test('Get a card', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
     await createCard(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const card_id = body.card_id
     const responseGC = await request.get(`/1/cards/${card_id}?key=${key}&token=${token}`);
     const responseBodyGC = await responseGC.json()
@@ -51,18 +50,12 @@ test.describe('cards', () => {
     console.log(responseBodyGC.name)
 
     await deleteCard(request)
-
-    await deleteBoard(request)
   })
 
   test('Update a card - name', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
     await createCard(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const card_id = body.card_id
     const responseUC = await request.put(`/1/cards/${card_id}?key=${key}&token=${token}`, {
       data: {
@@ -74,23 +67,15 @@ test.describe('cards', () => {
     console.log(responseBodyUC.name)
 
     await deleteCard(request)
-
-    await deleteBoard(request)
   })
 
   test('Delete a card', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
     await createCard(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const card_id = body.card_id
     const responseDC = await request.delete(`/1/cards/${card_id}?key=${key}&token=${token}`);
     expect(responseDC.status()).toEqual(200)
-
-    await deleteBoard(request)
   })
 })
 

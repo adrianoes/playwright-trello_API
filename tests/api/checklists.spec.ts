@@ -7,15 +7,21 @@ require('dotenv').config()
 const key = process.env.TRELLO_KEY
 const token = process.env.TRELLO_TOKEN
 
+test.beforeEach(async ({ request }) => {
+  await createBoard(request)
+  await createList(request)
+  await createCard(request)
+});
+
+test.afterEach(async ({ request }) => {
+  await deleteCard(request)
+  await deleteBoard(request)
+});
+
 test.describe('checklists', () => {
   test('Create a checklist', async ({ request }) => {
-    await createBoard(request)
 
-    await createList(request)
-
-    await createCard(request)
-
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const card_id = body.card_id
     const list_id = body.list_id
     const board_id = body.board_id
@@ -35,22 +41,12 @@ test.describe('checklists', () => {
     }), "utf8");
 
     await deleteChecklist(request)
-
-    await deleteCard(request)
-
-    await deleteBoard(request)
   })
 
   test('Get a checklist', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
-    await createCard(request)
-
     await createChecklist(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const checklist_id = body.checklist_id
     const responseGCL = await request.get(`/1/checklists/${checklist_id}?key=${key}&token=${token}`);
     const responseBodyGCL = await responseGCL.json()
@@ -58,22 +54,12 @@ test.describe('checklists', () => {
     console.log(responseBodyGCL.name)
 
     await deleteChecklist(request)
-
-    await deleteCard(request)
-
-    await deleteBoard(request)
   })
 
   test('Update a checklist - name', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
-    await createCard(request)
-
     await createChecklist(request)
     
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const checklist_id = body.checklist_id
     const responseUCL = await request.put(`/1/checklists/${checklist_id}?key=${key}&token=${token}`, {
       data: {
@@ -85,29 +71,16 @@ test.describe('checklists', () => {
     console.log(responseBodyUCL.name)
 
     await deleteChecklist(request) 
-
-    await deleteCard(request)
-
-    await deleteBoard(request)
   })
 
   test('Delete a checklist', async ({ request }) => {
-    await createBoard(request)
-
-    await createList(request)
-
-    await createCard(request)
 
     await createChecklist(request)
     
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const checklist_id = body.checklist_id
     const responseDCL = await request.delete(`/1/checklists/${checklist_id}?key=${key}&token=${token}`);
     expect(responseDCL.status()).toEqual(200)
-
-    await deleteCard(request)
-
-    await deleteBoard(request)
   })
 })
 

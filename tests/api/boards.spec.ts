@@ -32,7 +32,7 @@ test.describe('Boards', () => {
   test('Get a board', async ({ request }) => {
     await createBoard(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const board_id = body.board_id
     console.log(board_id)
     const responseGB = await request.get(`/1/boards/${board_id}?key=${key}&token=${token}`);
@@ -46,7 +46,7 @@ test.describe('Boards', () => {
   test('Update a board - name', async ({ request }) => {
     await createBoard(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const board_id = body.board_id
     console.log(board_id)
     const responseUB = await request.put(`/1/boards/${board_id}?key=${key}&token=${token}`, {
@@ -64,7 +64,7 @@ test.describe('Boards', () => {
   test('Delete a board', async ({ request }) => {
     await createBoard(request)
 
-    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
     const board_id = body.board_id
     console.log(board_id)
     const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);

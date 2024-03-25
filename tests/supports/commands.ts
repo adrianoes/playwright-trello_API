@@ -22,7 +22,7 @@ export async function createBoard(request: APIRequestContext) {
 }
 
 export async function deleteBoard(request: APIRequestContext) {
-  const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+  const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
   const board_id = body.board_id
   console.log(board_id)
   const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
@@ -30,7 +30,7 @@ export async function deleteBoard(request: APIRequestContext) {
 }
 
 export async function createList(request: APIRequestContext) {
-  const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+  const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
   const board_id = body.board_id
   console.log(board_id)
   const list_name = 'myList123'
@@ -47,7 +47,7 @@ export async function createList(request: APIRequestContext) {
 }
 
 export async function createCard(request: APIRequestContext) {
-  const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+  const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
   const list_id = body.list_id
   const board_id = body.board_id
   console.log(list_id)
@@ -68,14 +68,14 @@ export async function createCard(request: APIRequestContext) {
 }
 
 export async function deleteCard(request: APIRequestContext) {
-  const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+  const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
   const card_id = body.card_id
   const responseDC = await request.delete(`/1/cards/${card_id}?key=${key}&token=${token}`);
   expect(responseDC.status()).toEqual(200)
 }
 
 export async function createChecklist(request: APIRequestContext) {
-  const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+  const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
   const card_id = body.card_id
   const list_id = body.list_id
   const board_id = body.board_id
@@ -98,7 +98,7 @@ export async function createChecklist(request: APIRequestContext) {
 }
 
 export async function deleteChecklist(request: APIRequestContext) {
-  const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+  const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
   const checklist_id = body.checklist_id
   const responseDCL = await request.delete(`/1/checklists/${checklist_id}?key=${key}&token=${token}`);
   expect(responseDCL.status()).toEqual(200)
