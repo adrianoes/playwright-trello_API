@@ -18,7 +18,7 @@ Sample project to demonstrate basic api tests using the trello api of my persona
 - See "https://code.visualstudio.com/" and install the latest VSC stable version.
 - To use yarn packet manager, open windows prompt as admin and execute the "corepack enable" command (Optional).
 - "yarn create playwright" and select TypeScript, tests, yes for github actions and true for install its browsers. 
-- "yarn add dotenv -D", to install dotenv as a dev dependencie. 
+- "yarn add dotenv -D", to install dotenv as a dev dependency. 
 - Look for Playwright Test for VSCode in the extensions marketplace and install the official one from Microsoft.
 
 # Tests:
