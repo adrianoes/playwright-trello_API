@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { createBoard, createCard, createList, deleteBoard, deleteCard } from '../supports/commands';
+import fs from 'fs';
+
 require('dotenv').config()
 
 const key = process.env.TRELLO_KEY
@@ -6,99 +9,61 @@ const token = process.env.TRELLO_TOKEN
 
 test.describe('cards', () => {
   test('Create a card', async ({ request }) => {
-    const board_name = 'myBoard123'
-    const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
-    const responseBodyCB = await responseCB.json()
-    const board_id = responseBodyCB.id
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    await createBoard(request)
 
-    const list_name = 'myList123'
-    const responseCL = await request.post(`/1/boards/${board_id}/lists?name=${list_name}&key=${key}&token=${token}`, {});
-    const responseBodyCL = await responseCL.json()
-    const list_id = responseBodyCL.id
-    expect(responseCL.status()).toEqual(200)
-    console.log(responseBodyCL.name)
+    await createList(request)
 
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const list_id = body.list_id
+    const board_id = body.board_id
+    console.log(list_id)
     const responseCC = await request.post(`/1/cards?idList=${list_id}&key=${key}&token=${token}`, {
       data: {
         name: "myCard123"
     }
     });
     const responseBodyCC = await responseCC.json()
-    const card_id = responseBodyCC.id
     expect(responseCC.status()).toEqual(200)
     console.log(responseBodyCC.name)
+    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+      board_id: board_id,
+      list_id: list_id,
+      card_id: responseBodyCC.id
+    }), "utf8");
 
-    const responseDC = await request.delete(`/1/cards/${card_id}?key=${key}&token=${token}`);
-    expect(responseDC.status()).toEqual(200)
+    await deleteCard(request)
 
-    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 
   test('Get a card', async ({ request }) => {
-    const board_name = 'myBoard123'
-    const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
-    const responseBodyCB = await responseCB.json()
-    const board_id = responseBodyCB.id
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    await createBoard(request)
 
-    const list_name = 'myList123'
-    const responseCL = await request.post(`/1/boards/${board_id}/lists?name=${list_name}&key=${key}&token=${token}`, {});
-    const responseBodyCL = await responseCL.json()
-    const list_id = responseBodyCL.id
-    expect(responseCL.status()).toEqual(200)
-    console.log(responseBodyCL.name)
+    await createList(request)
 
-    const responseCC = await request.post(`/1/cards?idList=${list_id}&key=${key}&token=${token}`, {
-      data: {
-        name: "myCard123" //Card name is passed in the body, not in the url
-    }
-    });
-    const responseBodyCC = await responseCC.json()
-    const card_id = responseBodyCC.id
-    expect(responseCC.status()).toEqual(200)
-    console.log(responseBodyCC.name)
+    await createCard(request)
 
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const card_id = body.card_id
     const responseGC = await request.get(`/1/cards/${card_id}?key=${key}&token=${token}`);
     const responseBodyGC = await responseGC.json()
     expect(responseGC.status()).toEqual(200)    
     console.log(responseBodyGC.name)
 
-    const responseDC = await request.delete(`/1/cards/${card_id}?key=${key}&token=${token}`);
-    expect(responseDC.status()).toEqual(200)
+    await deleteCard(request)
 
-    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 
   test('Update a card - name', async ({ request }) => {
-    const board_name = 'myBoard123'
-    const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
-    const responseBodyCB = await responseCB.json()
-    const board_id = responseBodyCB.id
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    await createBoard(request)
 
-    const list_name = 'myList123'
-    const responseCL = await request.post(`/1/boards/${board_id}/lists?name=${list_name}&key=${key}&token=${token}`, {});
-    const responseBodyCL = await responseCL.json()
-    const list_id = responseBodyCL.id
-    expect(responseCL.status()).toEqual(200)
-    console.log(responseBodyCL.name)
+    await createList(request)
 
-    const responseCC = await request.post(`/1/cards?idList=${list_id}&key=${key}&token=${token}`, {
-      data: {
-        name: "myCard123" //Card name is passed in the body, not in the url
-    }
-    });
-    const responseBodyCC = await responseCC.json()
-    const card_id = responseBodyCC.id
-    expect(responseCC.status()).toEqual(200)
-    console.log(responseBodyCC.name)
+    await createCard(request)
 
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const card_id = body.card_id
     const responseUC = await request.put(`/1/cards/${card_id}?key=${key}&token=${token}`, {
       data: {
         name: "myCard2"
@@ -108,43 +73,24 @@ test.describe('cards', () => {
     expect(responseUC.status()).toEqual(200)    
     console.log(responseBodyUC.name)
 
-    const responseDC = await request.delete(`/1/cards/${card_id}?key=${key}&token=${token}`);
-    expect(responseDC.status()).toEqual(200)
+    await deleteCard(request)
 
-    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 
   test('Delete a card', async ({ request }) => {
-    const board_name = 'myBoard123'
-    const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
-    const responseBodyCB = await responseCB.json()
-    const board_id = responseBodyCB.id
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    await createBoard(request)
 
-    const list_name = 'myList123'
-    const responseCL = await request.post(`/1/boards/${board_id}/lists?name=${list_name}&key=${key}&token=${token}`, {});
-    const responseBodyCL = await responseCL.json()
-    const list_id = responseBodyCL.id
-    expect(responseCL.status()).toEqual(200)
-    console.log(responseBodyCL.name)
+    await createList(request)
 
-    const responseCC = await request.post(`/1/cards?idList=${list_id}&key=${key}&token=${token}`, {
-      data: {
-        name: "myCard123"
-    }
-    });
-    const responseBodyCC = await responseCC.json()
-    const card_id = responseBodyCC.id
-    expect(responseCC.status()).toEqual(200)
-    console.log(responseBodyCC.name)
+    await createCard(request)
 
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const card_id = body.card_id
     const responseDC = await request.delete(`/1/cards/${card_id}?key=${key}&token=${token}`);
     expect(responseDC.status()).toEqual(200)
 
-    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 })
 

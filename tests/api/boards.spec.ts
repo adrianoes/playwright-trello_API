@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { createBoard } from '../supports/commands';
-import fixtureData from '../fixtures/testdata.json';
+import { createBoard, deleteBoard } from '../supports/commands';
 import fs from 'fs';
-import { setTimeout } from 'timers/promises';
+// imports below are an atempt to deal with async logic. 
+// import { setTimeout } from 'timers/promises';
+// import fixtureData from '../fixtures/testdata.json';
 
 require('dotenv').config()
 
@@ -14,42 +15,40 @@ test.describe('Boards', () => {
     const board_name = 'myBoard123'
     const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
     const responseBodyCB = await responseCB.json()
+    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+      board_id: responseBodyCB.id
+    }), "utf8");
+    // code below is an atempt to deal with write async logic
     // const board_id = responseBodyCB.id
-    fs.writeFile('tests/fixtures/testdata.json', JSON.stringify({
-      board_id: responseBodyCB.id      
-    }), err => { if (err) console.log("Error writing file:", err);});
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    // fs.writeFile('tests/fixtures/testdata.json', JSON.stringify({
+    //   board_id: responseBodyCB.id      
+    // }), err => { if (err) console.log("Error writing file:", err);});
+    // expect(responseCB.status()).toEqual(200)
+    // console.log(responseBodyCB.name)
 
-    // const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    // expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 
   test('Get a board', async ({ request }) => {
-    const board_name = 'myBoard123'
-    const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
-    const responseBodyCB = await responseCB.json()
-    const board_id = responseBodyCB.id
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    await createBoard(request)
 
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const board_id = body.board_id
+    console.log(board_id)
     const responseGB = await request.get(`/1/boards/${board_id}?key=${key}&token=${token}`);
     const responseBodyGB = await responseGB.json()
     expect(responseGB.status()).toEqual(200)    
     console.log(responseBodyGB.name)
 
-    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 
   test('Update a board - name', async ({ request }) => {
-    const board_name = 'myBoard123'
-    const responseCB = await request.post(`/1/boards/?name=${board_name}&key=${key}&token=${token}`, {});
-    const responseBodyCB = await responseCB.json()
-    const board_id = responseBodyCB.id
-    expect(responseCB.status()).toEqual(200)
-    console.log(responseBodyCB.name)
+    await createBoard(request)
 
+    const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
+    const board_id = body.board_id
+    console.log(board_id)
     const responseUB = await request.put(`/1/boards/${board_id}?key=${key}&token=${token}`, {
       data: {
         name: "myBoard2"
@@ -59,24 +58,23 @@ test.describe('Boards', () => {
     expect(responseUB.status()).toEqual(200)    
     console.log(responseBodyUB.name)
 
-    const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
-    expect(responseDB.status()).toEqual(200)
+    await deleteBoard(request)
   })
 
   test('Delete a board', async ({ request }) => {
     await createBoard(request)
-
 
     const body = JSON.parse(fs.readFileSync("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8"))
     const board_id = body.board_id
     console.log(board_id)
     const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
     expect(responseDB.status()).toEqual(200)
-    //colocar os métodos api aqui dentro - não funcionou, ainda le o valor anterior
-    //escrever variáveis de ambiente  com valo do response
-    //desativar paralelismo 
-    // pesquisar como manter o contexto aberto durante o tempo necessário
-    // fazer o write sync e read sync - funcionou. Descobrir uma forma de funcionar async pois é a caracteristica do playwright. Começar por descobrir como manter o contexto aberto.
+    //ideas to deal with async logic are presented below
+    //put api requests here inside
+    //write env variables with the values of the responses
+    //deactivate paralelism
+    // research on how to keep context open for the time that is needed
+    // execute write sync and read sync - it works. However an assync way should be elaborated to keep playwright good practices. Code below was an atempt of that
     
     // fs.readFile("C:/playwright-trello_API/tests/fixtures/testdata.json", "utf8", async function(err, data) {
     //   if (err) { throw err }
@@ -87,15 +85,6 @@ test.describe('Boards', () => {
     //   // const responseDB = await request.delete(`/1/boards/${board_id}?key=${key}&token=${token}`);
     //   // expect(responseDB.status()).toEqual(200) 
     // })
-
-    // console.dir(fixtureData.board_id)
-    // console.log(JSON.stringify(fixtureData.board_id))
-    // console.log(JSON.parse(JSON.stringify(fixtureData.board_id)))
-    // const stream = new fs.ReadStream("C:/playwright-trello_API/tests/fixtures/testdata.json");
-    // console.log(stream)
-    // escrever body id no .env
-
-
   })
 })
 
